@@ -1,0 +1,118 @@
+<!doctype html>
+<html>
+<head>
+    <title>Sequence - {{part_num}}</title>
+	<link rel="shortcut icon" href="/static/images/squarelogo.jpg">
+	<style type="text/css">
+		@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+        html, body {
+            font-family: 'Roboto', sans-serif;
+        }
+		.top-bar {
+			width: 100%;
+			height: 50px;
+			margin: 5px;
+			display: flex;
+			font-family: 'Roboto', sans-serif;
+				}
+		.box-top {
+			width: 100%;
+			min-width: 1350px;
+			background-color: #598364;
+			padding: 20px;
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+		}
+		.box-top-right{
+		}
+		.top-ui {
+			width: 100%;
+			min-width: 800px;
+			height: 50px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.top-ui li{
+			width:10%;
+			min-width: 50px;
+			margin:-5px 50px 0 70px;
+			float: left;
+			text-align: center;
+			display: block;
+		}
+		.top-ui a{
+			color: #fca847;
+			text-decoration: none;
+		}
+		.top-ui a:hover{
+			color: #fcf6e6;
+		}
+		.top-ui img{
+			height: 40px;
+			margin: 0;
+			padding: 0;
+			display: inline;
+			position: relative;
+			top: -10px;
+		}
+		#icon{
+			transition:box-shadow 0.4s;
+			border: #598364;
+			border-radius: 10px;
+		}
+		#icon:hover{
+			box-shadow:0 0 10px #ee994d;
+		}
+	</style>
+	<script type="text/javascript" src="/static/clipboard.min.js"></script>
+
+</head>
+<body style="background-color: #fcf6e6">
+	<div class="top-bar">
+	<div class="box-top">
+		<ul class="top-ui">
+		<li>
+			<a href="/"><img src="/static/images/mainlogo.png"></a>
+		</li>
+		<li>
+			<a href="/">Home</a>
+		</li>
+		<li>
+			<a href="/sh">Search History</a>
+		</li>
+		<li>
+			<a href="https://gitlab.igem.org/2022/software-tools/fudan">About</a>
+		</li>
+		</ul>
+	</div>
+	</div>
+<div style="width: 70vw;margin-left: 5vw; word-wrap:break-word;word-break:break-all;float: left;">
+	<h1>Sequence:</h1>
+  <p> > {{part_num}}</p>
+	<p id="sequence">{{seq|upper}}</p>
+</div>
+<div style="float: left; margin-top: 70px; margin-left: 5vw;">
+<p id="txt">Copy to clipboard</p>
+<div id="div1" style="float: left;" class="btn" data-clipboard-action="copy" data-clipboard-target="#sequence"><img id="icon" src="/static/images/copy.svg" style="height: 40px;"></div>
+</div>
+<script>
+        var clipboard = new ClipboardJS('.btn');
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+			var div = document.getElementById("div1");
+			div.removeChild(div.firstChild);
+			var newicon = document.createElement("img");
+			newicon.src = "/static/images/done.svg";
+			newicon.style.height = "40px";
+			document.getElementById("div1").appendChild(newicon);
+			document.getElementById("txt").innerText = "Copied!";
+        });
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action);
+        });
+</script>
+</body>
+</html>

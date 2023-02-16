@@ -1,0 +1,371 @@
+<!doctype html>
+<html>
+<head>
+    <title>Map - {{part_num}}</title>
+	<link rel="shortcut icon" href="/static/images/squarelogo.jpg">
+    <style type="text/css">
+		@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+        html, body {
+            font-family: 'Roboto', sans-serif;
+        }
+		a {
+    		text-decoration: none;
+		}
+		table {
+			width: 90%;
+			margin: 10px auto;
+			border-collapse: separate;
+			border: 3px solid #ee994d;
+			border-radius: 10px;
+			background-color: #fcf6e6;
+		}
+		td {
+			height: 25px;
+			line-height: 25px;
+			text-align: center;
+			border: 3px solid #fcf6e6;
+		}
+		tr {
+			background: #fcf6e6;
+			transition: box-shadow 0.8s ease;
+		}
+		tr:hover {
+			box-shadow:2px 2px 4px #ee994d;
+		}
+		.top-bar {
+    width: 100%;
+    height: 50px;
+    margin: 5px;
+    display: flex;
+	font-family: 'Roboto', sans-serif;
+		}
+		.box-top {
+			width: 100%;
+			min-width: 1350px;
+			background-color: #598364;
+			padding: 20px;
+			border-bottom-left-radius: 8px;
+			border-bottom-right-radius: 8px;
+			border-top-left-radius: 8px;
+			border-top-right-radius: 8px;
+		}
+		.box-top-right{
+		}
+		.top-ui {
+			width: 100%;
+			min-width: 800px;
+			height: 50px;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		.top-ui li{
+			width:10%;
+			min-width: 50px;
+			margin:-5px 50px 0 70px;
+			float: left;
+			text-align: center;
+			display: block;
+		}
+		.top-ui a{
+			color: #fca847;
+			text-decoration: none;
+		}
+		.top-ui a:hover{
+			color: #fcf6e6;
+		}
+		.top-ui img{
+			height: 40px;
+			margin: 0;
+			padding: 0;
+			display: inline;
+			position: relative;
+			top: -10px;
+		}
+
+        #viz {
+            width: 65vw;
+            height: 80vh;
+            border: 1px solid lightgray;
+            font-family: 'Roboto', sans-serif;
+        }
+		.loading{
+			width: 80px;
+			height: 40px;
+			position:relative;
+			top:50%;
+			left:50%;
+			margin-top:-20px;
+			margin-left:-40px;
+		}
+		.loading span{
+			display: inline-block;
+			width: 8px;
+			height: 100%;
+			border-radius: 4px;
+			background: #598364;
+			-webkit-animation: loadsaven 1.04s ease infinite;
+		}
+		@-webkit-keyframes loadsaven{
+			0%,100%{
+				height: 40px;
+				background: #598364;
+			}
+			50%{
+				height: 60px;
+				margin-top: -20px;
+				background: #f4efd1;
+			}
+		}
+		.loading span:nth-child(2){
+			-webkit-animation-delay:0.13s;
+		}
+		.loading span:nth-child(3){
+			-webkit-animation-delay:0.26s;
+		}
+		.loading span:nth-child(4){
+			-webkit-animation-delay:0.39s;
+		}
+		.loading span:nth-child(5){
+			-webkit-animation-delay:0.52s;
+		}
+    </style>
+
+    <script type="text/javascript" src="/static/neovis.js"></script>
+
+
+
+    <script type="text/javascript">
+		// define config car
+		// instantiate nodevis object
+		// draw
+
+
+		var viz;
+		
+		function draw() {
+			var config = {
+				containerId: 'viz',
+				neo4j: {
+					serverUrl: 'bolt://{{ip}}/:7687',
+					serverUser: 'neo4j',
+					serverPassword: 'igem2022'
+				},
+				visConfig: {
+                    nodes: {
+                        shape: 'dot',
+						font: {
+							face:'Roboto',
+						},
+                    },
+					edges: {
+						arrows: {
+							to: {enabled: true}
+						},
+						color:'#CCC',
+						font: {
+							face:'Roboto',
+						},
+					},
+					
+				},
+				labels: {
+                   Part:{
+                        label: "number",
+					   size:'node_size',
+					   color:'color',
+					   [NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+						   function: {
+								title: (props) => NeoVis.objectToTitleHtml(props, ["name","type","length","team","designer","date"])
+							},
+						},
+                    }
+				},
+				relationships: {
+					cite:{
+						[NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+						   static:{
+							   label: 'cite',
+						   },
+					},
+                    },
+					'cited by':{
+						[NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+						   static:{
+							   label: 'cited by',
+						   },
+					},
+                    },
+					'twins':{
+						[NeoVis.NEOVIS_ADVANCED_CONFIG]: {
+						   static:{
+							   label: 'twins',
+						   },
+					},
+                    },
+				},
+				initialCypher: "MATCH (n:Part{number:'{{part_num}}'})-[r*0..]->(m) RETURN n,r,m LIMIT 150"
+			};
+
+			viz = new NeoVis.default(config);
+			viz.registerOnEvent("clickNode", (e)=>{
+			viz.network.on( 'click', function(properties) {
+			  var ids = properties.nodes;
+			  var clickedNodes = viz.nodes.get(ids);
+			  if (!isEmpty(clickedNodes)){
+			  //document.getElementById("text").innerHTML = JSON.stringify(clickedNodes[0].raw.properties);
+			  createTable(clickedNodes[0].raw.properties);
+			  }
+			});
+			viz.network.on( 'doubleClick', function(properties) {
+			  var ids = properties.nodes;
+			  var clickedNodes = viz.nodes.get(ids);
+			  if (!isEmpty(clickedNodes)){
+			  window.open(clickedNodes[0].raw.properties.url);
+			  }
+			});
+		});
+     viz.registerOnEvent("completed", (e)=>{
+     viz.network.on('stabilizationIterationsDone', function(properties) {
+        document.getElementsByClassName('loading').innerHTML = "";
+      });
+		});
+			viz.render();
+			function isEmpty(v) {
+				switch (typeof v) {
+				case 'undefined':
+					return true;
+				case 'string':
+					if (v.replace(/(^[ \t\n\r]*)|([ \t\n\r]*$)/g, '').length == 0) return true;
+					break;
+				case 'boolean':
+					if (!v) return true;
+					break;
+				case 'number':
+					if (0 === v || isNaN(v)) return true;
+					break;
+				case 'object':
+					if (null === v || v.length === 0) return true;
+					for (var i in v) {
+						return false;
+					}
+					return true;
+				}
+				return false;
+			}
+			function createTable(info){
+				var idobj = document.getElementById('ID');
+				idobj.innerText = info.number;
+				var citedobj = document.getElementById('Cited');
+				citedobj.innerText = info.cites;
+				var nameobj = document.getElementById('Name');
+				nameobj.innerText = info.name;
+				var conobj = document.getElementById('Contents');
+				if (info.contents.length > 200){
+				conobj.innerText = info.contents.slice(0,200)+'...';
+			}
+				else{
+					conobj.innerText = info.contents;
+				}
+				var typeobj = document.getElementById('Type');
+				typeobj.innerText = info.type;
+				var dateobj = document.getElementById('Date');
+				dateobj.innerText = info.date;
+				var teamobj = document.getElementById('Team');
+				teamobj.innerText = info.team;
+				var dsnobj = document.getElementById('Designer');
+				dsnobj.innerText = info.designer;
+				var seqobj = document.getElementById('Sequence');
+				seqobj.innerHTML = "Get sequence";
+				seqobj.href = "../../seq/"+info.number;
+				seqobj.target = "_blank";
+				var lobj = document.getElementById('Length');
+				lobj.innerText = info.length;
+				var urlobj = document.getElementById('Url');
+				urlobj.href = info.url;
+				urlobj.innerHTML = "View part";
+				urlobj.target = "_blank";
+			}
+		}
+		
+    </script>
+</head>
+<body onload="draw()" style="margin-left: 10px;background-color: #fcf6e6">
+<div class="top-bar">
+	<div class="box-top">
+		<ul class="top-ui">
+		<li>
+			<a href="/"><img src="/static/images/mainlogo.png"></a>
+		</li>
+		<li>
+			<a href="/">Home</a>
+		</li>
+		<li>
+			<a href="/sh">Search History</a>
+		</li>
+		<li>
+			<a href="https://gitlab.igem.org/2022/software-tools/fudan">About</a>
+		</li>
+		</ul>
+	</div>
+</div>
+<p><strong>Scroll to zoom the canvas and drag to move the nodes. Click the circle to display the part details and double click to go to the part page.&nbsp;</strong><br>
+<em>*Larger node means more citations, greener means more recent</em></p>
+<div id="viz" style="float:left;background-color: #fcf6e6;margin-top: 10px;border-radius: 10px;border: 3px solid #ee994d;">
+	<div class="loading" style="user-select:none;visibility: visible">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+	</div>
+</div>
+<div id="text" style="width:20vw; float:left; margin-left: 5vw;">
+	<table border="1">
+	<tr>
+	  <td>ID</td>
+	  <td id="ID"></td>
+	</tr>
+	<tr>
+	  <td>Cited</td>
+	  <td id="Cited"></td>
+	</tr>
+	<tr>
+	  <td>Name</td>
+	  <td id="Name"></td>
+	</tr>
+	<tr>
+	  <td>Contents</td>
+	  <td id="Contents"></td>
+	</tr>
+	<tr>
+	  <td>Type</td>
+	  <td id="Type"></td>
+	</tr>
+	<tr>
+	  <td>Date</td>
+	  <td id="Date"></td>
+	</tr>
+	<tr>
+	  <td>Team</td>
+	  <td id="Team"></td>
+	</tr>
+	<tr>
+	  <td>Designer</td>
+	  <td id="Designer"></td>
+	</tr>
+	<tr>
+	  <td>Sequence</td>
+	  <td><a id="Sequence"></a></td>
+	</tr>
+	<tr>
+	  <td>Length</td>
+	  <td id="Length"></td>
+	</tr>
+	<tr>
+	  <td><a id="Url" href = "../../"></a></td>
+	</tr>
+	</table>
+</div>
+</body>
+</html>

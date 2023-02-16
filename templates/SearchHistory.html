@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="shortcut icon" href="/static/images/squarelogo.jpg">
+    <title>SearchHistory</title>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100&family=Noto+Sans&display=swap');
+	</style>
+</head>
+
+<body style="background-color: #fcf6e6">
+<br><br>
+<p style="font-family: 'Noto Sans', sans-serif; font-size: 0.8rem;margin: 0.3rem 0;color: grey;">Only the last 100 search records are displayed</p>
+<br><br>
+	{% for search in res_lst %}
+		{% for k,v in search.items() %}
+	<div class="result" style="width: 600px; margin-bottom: 30px;margin-left: 10px; font-family: 'Noto Sans', sans-serif;">
+    	<div class="head">
+        	<p style="font-size: 0.8rem;margin: 0;color: grey;">Searched by {{v[0]}}</p>
+        </div>
+        <div class="body">
+            <p style="font-size: 1.1rem;margin: 0.3rem 0;"><a href="{{v[1]}}">{{k}}</a></p>
+        </div>
+    </div>
+	{% endfor %}
+	{% endfor %}
+</body>
+
+</html>

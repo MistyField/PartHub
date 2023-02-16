@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{{key}}&nbsp;-&nbsp;Result</title>
+	<link rel="shortcut icon" href="/static/images/squarelogo.jpg">
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+		a {
+    text-decoration: none;
+}
+.totop{
+    display: inline-block;
+	position: fixed;
+	right: 50px;
+	bottom: 100px;
+    width: 53px;
+    height: 53px;
+	border-radius: 53px;
+    text-align: center;
+    padding-top: 5px;
+	transition:box-shadow 0.4s;
+	border: #598364
+    }
+.totop:hover{
+    box-shadow:0 0 10px #598364;
+}
+.pagination {
+    padding: 30px 0;
+}
+.pagination ul {
+    margin: 0px;
+    padding: 0;
+    list-style-type: none;
+}
+.pagination a {
+    display: inline-block;
+    padding: 10px 18px;
+    color: #222;
+}
+.p2 .is-active li {
+    font-weight: bold;
+    border-bottom: 3px solid #598364;
+}
+		.writebox {
+			background-color:#fff;
+			border-radius:40px;
+			padding:5px;
+			width:600px;
+			height:33px;
+			border:1px solid #ccc;
+			transition:box-shadow 0.4s;
+			font-family: 'Roboto', sans-serif;
+		}
+		.writebox:hover {
+			box-shadow:0 0 10px #598364;
+		}
+		.typeselect{
+			margin-top: 5px;
+		}
+		.result{
+			font-family: 'Roboto', sans-serif;
+		}
+		.sortedby{
+			text-align: center;
+		}
+		.sortselectbox {
+		font-family: 'Roboto', sans-serif;
+		text-align: center;
+		display: inline-block;
+		width: 200px;
+		height: 35px;
+		position: relative;
+		vertical-align: middle;
+		padding: 0;
+		overflow: hidden;
+		background-color: #fff;
+		color: #555;
+		border: 1px solid #CCC;
+		text-shadow: none;
+		border-radius: 4px;	
+		transition: box-shadow 0.25s ease;
+		z-index: 2;
+	}
+ 
+	.sortselectbox:hover {
+		box-shadow: 0 1px 4px #598364;
+	}
+ 
+	.sortselectbox:before {
+		content: "";
+		position: absolute;
+		width: 0;
+		height: 0;
+		border: 10px solid transparent;
+		border-top-color: #ccc;
+		top: 14px;
+		right: 10px;
+		cursor: pointer;
+		z-index: -2;
+	}
+	.sortselectbox select {
+		cursor: pointer;
+		padding: 10px;
+		width: 100%;
+		border: none;
+		background: transparent;
+		background-image: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+	}
+ 
+	.sortselectbox select:focus {
+		outline: none;
+	}
+		.top-bar {
+    width: 100%;
+    height: 50px;
+    margin: 5px;
+    display: flex;
+	font-family: 'Roboto', sans-serif;
+}
+.box-top {
+    width: 100%;
+    min-width: 1350px;
+    background-color: #598364;
+    padding: 20px;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+}
+.box-top-right{
+}
+.top-ui {
+    width: 100%;
+    min-width: 800px;
+    height: 50px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.top-ui li{
+    width:10%;
+    min-width: 50px;
+    margin:-5px 50px 0 70px;
+    float: left;
+    text-align: center;
+    display: block;
+}
+.top-ui a{
+    color: #fca847;
+    text-decoration: none;
+}
+.top-ui a:hover{
+    color: #fcf6e6;
+}
+.top-ui img{
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    display: inline;
+    position: relative;
+    top: -10px;
+}
+		input {
+	outline:none;
+	font-size: 20px; 
+	font-family: 'Roboto', sans-serif;
+}
+	</style>
+</head>
+
+<body style="background-color: #fcf6e6">
+	
+	<div class="top-bar">
+		<div class="box-top">
+			<ul class="top-ui">
+				<li>
+					<a href="/"><img src="/static/images/mainlogo.png"></a>
+				</li>
+				<li>
+					<a href="/">Home</a>
+				</li>
+				<li>
+					<a href="/sh">Search History</a>
+				</li>
+				<li>
+					<a href="https://gitlab.igem.org/2022/software-tools/fudan">About</a>
+				</li>
+			</ul>
+		</div>
+</div>
+	<form method="get" action="/sp" align="left" class="writebox" id="navigation">
+		<table colspan="1" width="100%" cellspacing="2" cellpadding="0">
+			<tr width="100%" align="left" colspan="0">
+				<td>
+					<img src="/static/images/searchicon.svg" alt="searchlogo" style="height:27px;"/>
+				</td>
+				<td width="95%">
+					<input type="text" id="text" autofocus ="off" name="s" autocomplete="on" value="{{key}}"style="width:90%;height:100%;border:0;padding:3px;background:#fff;border-radius:10px;">
+				</td>
+			</tr>
+		</table>
+		
+		<div class="typeselect" style="font-size: 16px;">
+			Search by:
+			<input type="radio" name="searchtype" value="number"{%if type == 'number'%} checked {%endif%}>ID
+		<input type="radio" name="searchtype" value="name" {%if type == 'name'%} checked {%endif%}>Name
+		<input type="radio" name="searchtype" value="sequence" {%if type == 'sequence'%} checked {%endif%}>Sequence
+		<input type="radio" name="searchtype" value="designer" {%if type == 'designer'%} checked {%endif%}>
+		Designer
+		<input type="radio" name="searchtype" value="team" {%if type == 'team'%} checked {%endif%}>
+		Team
+		<input type="radio" name="searchtype" value="contents" {%if type == 'contents'%} checked {%endif%}>Content
+		</div>
+
+<br><br>
+<form method="get" id="sortform">
+  <table border="0">
+   <tr>
+     <td class="sortedby" style="font-family: 'Roboto', sans-serif; font-size: 20px;">Sort by:</td>
+     <td><div class="sortselectbox">
+    <select name="sort" onchange="submitForm();">
+        <option value="default"{%if sorttype == 'default'%}selected{%endif%}>Recommanded</option>
+        <option value="cite" {%if sorttype == 'cite'%}selected{%endif%}>Most cited</option>
+        {%if type == 'name' or type == 'contents'%}<option value="match"{%if sorttype == 'match'%} selected {%endif%}>Best match</option>{%endif%}
+        <option value="recent" {%if sorttype == 'recent'%}selected{%endif%}>Most recent</option>
+    </select>
+	</div></td>
+   </tr>
+</table>
+</form>
+</form>
+
+<script type="text/javascript">
+function submitForm(){
+	var form = document.getElementById("navigation");
+	form.submit();
+}
+</script>
+
+<br><br>
+<hr color="#2b7961">
+<br><br>
+<p style="margin-top: 30px;margin-left: 10px;font-family: 'Roboto', sans-serif;"><strong>Please choose a part to build a graph:</strong></p>
+	<p style="font-size: 0.8rem;margin: 0.3rem 0;color: grey; margin-left: 10px;">{{length}} result(s)</p>
+<div id="content">
+{% for node in res %}
+<div class="result" style="width: 600px; margin-bottom: 30px;margin-left: 10px;">
+        <div class="head">
+            <p style="font-size: 0.8rem;margin: 0;color: grey;">Year: {{node['year']}} > Team: {{node['team']}} > Designer: {{node['designer']}} > Type: {{node['type']}}</p>
+        </div>
+        <div class="body">
+            <p style="font-size: 1.1rem;margin: 0.3rem 0;"><a href="/g/{{node['number']}}">{{node['number']}}: {{node['name']}}</a></p>
+            <div class="description" style="font-size: 0.9rem;">{{node['matched_contents']}}...</div>
+        </div>
+        <div class="bottom">
+            <p style="font-size: 0.8rem;margin: 0.3rem 0;color: grey;">{{node['cites']}} cited · {{node['twins_num']}} twin(s) · {{node['length']}} bp · {%if node['isfavorite']=='True'%}Favorite Part · {%endif%}{%if node['released']!='Not Released'%}{{node['released']}} · {%endif%}{{node['date']}} · <a href="{{node['url']}}" target="_blank">view part</a></p>
+        </div>
+    </div>
+{% endfor %}
+</div>
+<div class="pagination p2" style="position: relative;bottom: 5px;font-family: 'Roboto', sans-serif; ">
+        <ul>
+            {% if status!=1%}
+	<a href="/sp?s={{key}}&searchtype={{type}}&p=1">
+          	<li>1</li>
+	</a>
+	<a><li>...</li></a>
+{%endif%}
+{% for page in rg %}
+	{% if page-p==0%}
+		<a class="is-active" href="/sp?s={{key}}&searchtype={{type}}&p={{page}}">
+                		<li>{{page}}</li>
+            	</a>
+	{%elif page > 0%}
+		<a href="/sp?s={{key}}&searchtype={{type}}&p={{page}}">
+                		<li>{{page}}</li>
+            	</a>
+	{%endif%}
+{%endfor%}
+{% if p < total-2%}
+           <a><li>...</li></a>
+	<a href="/sp?s={{key}}&searchtype={{type}}&p={{total}}">
+           	<li>{{total}}</li>
+	</a>
+{%endif%}
+        </ul>
+    </div>
+	<div style="overflow: hidden;position: relative;bottom: 10px;bottom: 20px;z-index: 10;">
+            <div style="padding-top:20px;padding-right:50px;padding-bottom:50px">
+                <a href="#" style="float: left;" class="totop"><img src="/static/images/arrow_upward.svg"></a>
+            </div>
+      </div>
+<script>
+	   const regEscape = v => v.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
+       var content = document.getElementById("content");
+       var contents = content.innerHTML;
+       var text = document.getElementById("text");
+       var allvalue = text.value;
+	   {%if multiple_type == 'AND'%}
+	   var value_arr = allvalue.split(' AND ');
+	   {%elif multiple_type == 'OR'%}
+	   var value_arr = allvalue.split(' OR ');
+	   {%else%}
+	   var value_arr = [allvalue];
+	   {%endif%}
+	   for (var i=0;i<value_arr.length;i++){
+		   try{
+		   value = value_arr[i];
+		   var values = contents.split(new RegExp(regEscape(value), "ig"));
+		   var ini_value = contents.match(new RegExp(regEscape(value), "ig"))[0];
+		   contents = values.join('<span style="color: red;">' + ini_value + '</span>');
+			   }catch (err){}
+	   }
+       content.innerHTML = contents;
+</script>
+
+</body>
+
+</html>
